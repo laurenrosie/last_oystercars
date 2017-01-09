@@ -1,4 +1,5 @@
-require 'Oystercard'
+require 'oystercard'
+
 
 describe Oystercard do
 
