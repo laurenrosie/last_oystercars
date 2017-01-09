@@ -1,6 +1,5 @@
 require 'oystercard'
 
-
 describe Oystercard do
 
   it 'checks that the oystercard has a balance' do
