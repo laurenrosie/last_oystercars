@@ -9,7 +9,7 @@ MAX_LIMIT = 90
 
   def top_up(money)
     top_up_attempt = @balance + money
-    raise "Limit of #{MAX_LIMIT} exceeded, can not top up card." if top_up_attempt > MAX_LIMIT
+    raise "Limit of #{MAX_LIMIT} exceeded, can not top up the card." if top_up_attempt > MAX_LIMIT
     @balance += money
   end
 
