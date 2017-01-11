@@ -71,10 +71,7 @@ end
       subject.touch_in(entry_station)
       expect(subject.entry_station).to eq entry_station
     end
-    it 'expect entry station to be recorded in station history' do
-      subject.touch_in(entry_station)
-      expect(subject.station_history).to include entry_station
-    end
+
   end
     context 'with 0 balance' do
     it 'raises error if not enough balance' do
@@ -86,22 +83,55 @@ end
 
 describe '#touch_out' do
   let(:entry_station){double :entry_station}
+    let(:exit_station){double :exit_station}
 
   before(:each) do
     subject.top_up(Oystercard::MIN_LIMIT)
   end
 
   it 'can touch out' do
-    subject.touch_out
+    subject.touch_out(exit_station)
     expect(subject).not_to be_in_journey
   end
   it 'To be charged when we touch out of our journey' do
-    expect{subject.touch_out}.to change{subject.balance}.by (-Oystercard::MIN_LIMIT)
+    expect{subject.touch_out(exit_station)}.to change{subject.balance}.by (-Oystercard::MIN_LIMIT)
   end
     it 'changes entry_station to nil' do
       subject.touch_in(entry_station)
-      subject.touch_out
+      subject.touch_out(exit_station)
       expect(subject.entry_station).to eq nil
     end
   end
+
+  describe "station history hash" do
+      let(:entry_station){double :entry_station}
+        let(:exit_station){double :exit_station}
+        before(:each) do
+          subject.top_up(Oystercard::MIN_LIMIT)
+        end
+
+    it 'Checks if the station_history is empty by default' do
+      expect(subject.station_history).to include(:entry_station => nil, :exit_station => nil)
+    end
+
+    describe 'After touching in - 'do
+        before(:each) do
+          subject.touch_in(entry_station)
+        end
+
+        it 'expect entry station to be recorded in station history' do
+          allow(subject).to receive(:station_history).and_return({ entry_station: "Bank"})
+          expect(subject.station_history).to eq(:entry_station => "Bank")
+        end
+    describe 'After touching in and out -' do
+    it 'Checks that touching in and touching out creates one journey' do
+      subject.touch_out(exit_station)
+      allow(subject).to receive(:station_history).and_return({ entry_station: "Bank" , exit_station: "Aldgate"})
+      expect(subject.station_history).to include(:entry_station => "Bank", :exit_station => "Aldgate")
+
+    end
+  end
+  end
+  end
+
 end
