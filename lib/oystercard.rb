@@ -41,18 +41,6 @@ MIN_LIMIT = 1
     journey_log
   end
 
-  # def entry_station
-  #   @entry_station
-  # end
-  #
-  # def exit_station
-  #   @exit_station
-  # end
-
-  #def station_history
-  #  @station_history_array << station_history
-#  end
-
 def journey_log
   station_history = Hash.new
   station_history[:entry_station] = @entry_station

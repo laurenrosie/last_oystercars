@@ -92,7 +92,7 @@ end
       # end
     end
 
-    describe "station_history hash" do
+    describe "station_history_array" do
         let(:entry_station){double :entry_station}
           let(:exit_station){double :exit_station}
           before(:each) do
@@ -108,15 +108,16 @@ end
             subject.touch_in(entry_station)
           end
 
-          it 'expect entry station to be recorded in station history' do
-            allow(subject).to receive(:station_history).and_return({ entry_station: "Bank"})
-            expect(subject.station_history).to eq(:entry_station => "Bank")
-          end
+        it 'expect entry station to be recorded in station history' do
+          allow(subject).to receive(:station_history).and_return({ entry_station: "Bank"})
+          expect(subject.station_history).to eq(:entry_station => "Bank")
+        end
+
       describe 'After touching in and out -' do
-      it 'checks that touching in and touching out creates one journey' do
-        subject.touch_out(exit_station)
-        allow(subject).to receive(:journey_log).and_return({ entry_station: "Bank" , exit_station: "Aldgate"})
-        expect(subject.journey_log).to include(:entry_station => "Bank", :exit_station => "Aldgate")
+        it 'checks that touching in and touching out creates one journey' do
+          subject.touch_out(exit_station)
+          allow(subject).to receive(:journey_log).and_return({ entry_station: "Bank" , exit_station: "Aldgate"})
+          expect(subject.journey_log).to include(:entry_station => "Bank", :exit_station => "Aldgate")
         end
       end
     end
