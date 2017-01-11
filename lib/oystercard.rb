@@ -3,6 +3,7 @@ attr_reader :balance
 
 
 MAX_LIMIT = 90
+MIN_LIMIT = 1
 
   def initialize
     @balance = 0
@@ -12,7 +13,8 @@ MAX_LIMIT = 90
 
   def top_up(money)
     top_up_attempt = @balance + money
-    raise "Limit of #{MAX_LIMIT} exceeded, can not top up the card." if top_up_attempt > MAX_LIMIT
+    message = "Limit of #{MAX_LIMIT} exceeded, can not top up the card."
+    raise message if top_up_attempt > MAX_LIMIT
     @balance += money
   end
 
@@ -25,6 +27,8 @@ MAX_LIMIT = 90
   end
 
   def touch_in
+    message = "Insufficient funds. Must top up card."
+    raise message if balance < MIN_LIMIT
     @in_journey = true
   end
 
