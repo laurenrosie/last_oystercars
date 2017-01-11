@@ -1,8 +1,11 @@
 require './lib/oystercard'
 card = Oystercard.new
-card.touch_in(entry_station)
-card.top_up(1)
+card.top_up(10)
+card.touch_in("London Bridge")
+card.touch_out("Bank")
+card.touch_in("Clapham")
+card.touch_out("Victoria")
+card.station_history_array
 card.balance
-card.touch_in("london")
 card.in_journey?
 card.entry_station

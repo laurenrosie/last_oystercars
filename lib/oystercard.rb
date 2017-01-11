@@ -1,5 +1,6 @@
 class Oystercard
-attr_reader :balance, :entry_station, :exit_station, :station_history
+attr_reader :balance, :entry_station, :exit_station
+attr_accessor :station_history_array, :station_history
 
 MAX_LIMIT = 90
 MIN_LIMIT = 1
@@ -7,9 +8,7 @@ MIN_LIMIT = 1
   def initialize
     @balance = 0
     @in_journey = false
-    @entry_station = nil
-    @exit_station = nil
-    @station_history = {:entry_station => @entry_station, :exit_station => @exit_station}
+    @station_history_array = []
   end
 
   def top_up(money)
@@ -32,28 +31,34 @@ MIN_LIMIT = 1
     raise message if balance < MIN_LIMIT
     @in_journey = true
     @entry_station = entry_station
-    @station_history[:entry_station] = entry_station
+
   end
 
   def touch_out(exit_station)
     deduct(MIN_LIMIT)
-    @in_journey = false
-    @entry_station = nil
     @exit_station = exit_station
-    @station_history[:exit_station] = exit_station
+    @in_journey = false
+    journey_log
   end
 
-  def entry_station
-    @entry_station
-  end
+  # def entry_station
+  #   @entry_station
+  # end
+  #
+  # def exit_station
+  #   @exit_station
+  # end
 
-  def exit_station
-    @exit_station
-  end
+  #def station_history
+  #  @station_history_array << station_history
+#  end
 
-  def station_history
-    @station_history
-  end
+def journey_log
+  station_history = Hash.new
+  station_history[:entry_station] = @entry_station
+  station_history[:exit_station] = @exit_station
+  @station_history_array << station_history
+end
 
 private
     def deduct(money)

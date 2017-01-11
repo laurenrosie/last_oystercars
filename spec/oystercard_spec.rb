@@ -2,37 +2,29 @@ require 'oystercard'
 
 
 describe Oystercard do
-
-describe '#balance' do
-  it 'checks that the oystercard has a balance' do
-    expect(subject).to respond_to(:balance)
+  describe '#balance' do
+    it 'checks that the oystercard has a balance' do
+      expect(subject).to respond_to(:balance)
+    end
+    it 'has an initial balance' do
+      expect(subject.balance).to eql 0
+    end
   end
-end
 
-describe 'initial balance' do
-  it 'has an initial balance' do
-    expect(subject.balance).to eql 0
-  end
-end
-
-describe '#top_up' do
-  it 'allows card to be topped up by a certain amount' do
-    expect(subject).to respond_to(:top_up).with(1).argument
-  end
-end
-
-  describe 'top up card with a value' do
+  describe '#top_up' do
+    it 'allows card to be topped up by a certain amount' do
+      expect(subject).to respond_to(:top_up).with(1).argument
+    end
     it 'the oystercard will accept a value and store it' do
       expect{subject.top_up Oystercard::MIN_LIMIT}.to change {subject.balance }.by (Oystercard::MIN_LIMIT)
+    end
   end
-end
-
-  describe 'MAX_LIMIT' do
-    it 'will raise an error if top up limit is exceeded' do
-      subject.top_up(Oystercard::MAX_LIMIT)
-      expect{subject.top_up(Oystercard::MIN_LIMIT)}.to raise_error("Limit of #{Oystercard::MAX_LIMIT} exceeded, can not top up the card.")
+    describe 'MAX_LIMIT' do
+      it 'will raise an error if top up limit is exceeded' do
+        subject.top_up(Oystercard::MAX_LIMIT)
+        expect{subject.top_up(Oystercard::MIN_LIMIT)}.to raise_error("Limit of #{Oystercard::MAX_LIMIT} exceeded, can not top up the card.")
+    end
   end
-end
 
 #deduct method made priavte so tests ommitted for now.
 
@@ -48,17 +40,16 @@ end
 #   end
 # end
 
-describe '#in_journey?' do
-  it 'is initially not in journey' do
-    expect(subject).not_to be_in_journey
+  describe '#in_journey?' do
+    it 'is initially not in journey' do
+      expect(subject).not_to be_in_journey
+    end
   end
-end
 
   describe '#touch_in' do
     let(:entry_station){double :entry_station}
 
     context 'with min limit on balace' do
-
     before(:each) do
       subject.top_up(Oystercard::MIN_LIMIT)
     end
@@ -71,67 +62,63 @@ end
       subject.touch_in(entry_station)
       expect(subject.entry_station).to eq entry_station
     end
-
   end
     context 'with 0 balance' do
     it 'raises error if not enough balance' do
       expect{subject.touch_in(entry_station)}.to raise_error("Insufficient funds. Must top up card.")
     end
   end
-
 end
 
-describe '#touch_out' do
-  let(:entry_station){double :entry_station}
-    let(:exit_station){double :exit_station}
+  describe '#touch_out' do
+    let(:entry_station){double :entry_station}
+      let(:exit_station){double :exit_station}
 
-  before(:each) do
-    subject.top_up(Oystercard::MIN_LIMIT)
-  end
+    before(:each) do
+      subject.top_up(Oystercard::MIN_LIMIT)
+    end
 
-  it 'can touch out' do
-    subject.touch_out(exit_station)
-    expect(subject).not_to be_in_journey
-  end
-  it 'To be charged when we touch out of our journey' do
-    expect{subject.touch_out(exit_station)}.to change{subject.balance}.by (-Oystercard::MIN_LIMIT)
-  end
-    it 'changes entry_station to nil' do
-      subject.touch_in(entry_station)
+    it 'can touch out' do
       subject.touch_out(exit_station)
-      expect(subject.entry_station).to eq nil
+      expect(subject).not_to be_in_journey
     end
-  end
-
-  describe "station history hash" do
-      let(:entry_station){double :entry_station}
-        let(:exit_station){double :exit_station}
-        before(:each) do
-          subject.top_up(Oystercard::MIN_LIMIT)
-        end
-
-    it 'Checks if the station_history is empty by default' do
-      expect(subject.station_history).to include(:entry_station => nil, :exit_station => nil)
+    it 'to be charged when we touch out of our journey' do
+      expect{subject.touch_out(exit_station)}.to change{subject.balance}.by (-Oystercard::MIN_LIMIT)
+    end
+      # it 'changes entry_station to nil' do
+      #   subject.touch_in(entry_station)
+      #   subject.touch_out(exit_station)
+      #   expect(subject.entry_station).to eq nil
+      # end
     end
 
-    describe 'After touching in - 'do
-        before(:each) do
-          subject.touch_in(entry_station)
-        end
+    describe "station_history hash" do
+        let(:entry_station){double :entry_station}
+          let(:exit_station){double :exit_station}
+          before(:each) do
+            subject.top_up(Oystercard::MIN_LIMIT)
+          end
 
-        it 'expect entry station to be recorded in station history' do
-          allow(subject).to receive(:station_history).and_return({ entry_station: "Bank"})
-          expect(subject.station_history).to eq(:entry_station => "Bank")
-        end
-    describe 'After touching in and out -' do
-    it 'Checks that touching in and touching out creates one journey' do
-      subject.touch_out(exit_station)
-      allow(subject).to receive(:station_history).and_return({ entry_station: "Bank" , exit_station: "Aldgate"})
-      expect(subject.station_history).to include(:entry_station => "Bank", :exit_station => "Aldgate")
+      it 'checks if the station_history is empty by default' do
+        expect(subject.journey_log).to include(:entry_station => nil, :exit_station => nil)
+      end
 
+      describe 'After touching in - 'do
+          before(:each) do
+            subject.touch_in(entry_station)
+          end
+
+          it 'expect entry station to be recorded in station history' do
+            allow(subject).to receive(:station_history).and_return({ entry_station: "Bank"})
+            expect(subject.station_history).to eq(:entry_station => "Bank")
+          end
+      describe 'After touching in and out -' do
+      it 'checks that touching in and touching out creates one journey' do
+        subject.touch_out(exit_station)
+        allow(subject).to receive(:journey_log).and_return({ entry_station: "Bank" , exit_station: "Aldgate"})
+        expect(subject.journey_log).to include(:entry_station => "Bank", :exit_station => "Aldgate")
+        end
+      end
     end
   end
-  end
-  end
-
 end
