@@ -8,6 +8,7 @@ MIN_LIMIT = 1
     @balance = 0
     @in_journey = false
     @entry_station = nil
+    @station_history = []
   end
 
   def top_up(money)
@@ -30,6 +31,7 @@ MIN_LIMIT = 1
     raise message if balance < MIN_LIMIT
     @in_journey = true
     @entry_station = entry_station
+    @station_history << entry_station
   end
 
   def touch_out
@@ -40,6 +42,10 @@ MIN_LIMIT = 1
 
   def entry_station
     @entry_station
+  end
+
+  def station_history
+    @station_history
   end
 
 private

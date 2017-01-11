@@ -71,6 +71,10 @@ end
       subject.touch_in(entry_station)
       expect(subject.entry_station).to eq entry_station
     end
+    it 'expect entry station to be recorded in station history' do
+      subject.touch_in(entry_station)
+      expect(subject.station_history).to include entry_station
+    end
   end
     context 'with 0 balance' do
     it 'raises error if not enough balance' do
