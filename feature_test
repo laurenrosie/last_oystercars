@@ -1,0 +1,8 @@
+require './lib/oystercard'
+card = Oystercard.new
+card.touch_in(entry_station)
+card.top_up(1)
+card.balance
+card.touch_in("london")
+card.in_journey?
+card.entry_station
