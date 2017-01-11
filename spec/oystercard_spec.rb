@@ -35,17 +35,19 @@ end
   end
 end
 
-describe '#deduct' do
-  it 'allows card to have balance deducted' do
-    expect(subject).to respond_to(:deduct).with(1).argument
-  end
-end
+#deduct method made priavte so tests ommitted for now.
 
-  describe 'deduct money' do
-  it "will deduct the amount off the card" do
-    expect{subject.deduct (Oystercard::MIN_LIMIT)}.to change {subject.balance}.by (-Oystercard::MIN_LIMIT)
-  end
-end
+# describe '#deduct' do
+#   it 'allows card to have balance deducted' do
+#     expect(subject).to respond_to(:deduct).with(1).argument
+#   end
+# end
+#
+#   describe 'deduct money' do
+#   it "will deduct the amount off the card" do
+#     expect{subject.deduct (Oystercard::MIN_LIMIT)}.to change {subject.balance}.by (-Oystercard::MIN_LIMIT)
+#   end
+# end
 
 describe 'in_journey' do
   it 'is initially not in journey' do
@@ -70,5 +72,9 @@ describe 'tocuh_out' do
     subject.touch_out
     expect(subject).not_to be_in_journey
   end
+  it 'To be charged when we touch out of our journey' do
+    subject.top_up(Oystercard::MIN_LIMIT)
+  expect{subject.touch_out}.to change{subject.balance}.by (-Oystercard::MIN_LIMIT)
+end
 end
 end

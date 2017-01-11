@@ -18,10 +18,6 @@ MIN_LIMIT = 1
     @balance += money
   end
 
-  def deduct(money)
-    @balance -= money
-  end
-
   def in_journey?
     @in_journey
   end
@@ -33,8 +29,15 @@ MIN_LIMIT = 1
   end
 
   def touch_out
+    deduct(MIN_LIMIT)
     @in_journey = false
   end
 
+
+private
+  
+    def deduct(money)
+      @balance -= money
+    end
 
 end
