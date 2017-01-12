@@ -77,7 +77,15 @@ end
 # In order to know how far I have travelled
 # As a customer
 # I want to know what zone a station is in
-#
+
+# Station class that exposes a name and a zone variable
+it 'so customer knows where they have travelled, store station name and zone' do
+  oystercard.top_up Oystercard::MIN_LIMIT
+  entry_station = Station.new("Bank", 1)
+  oystercard.touch_in(entry_station)
+  expect(oystercard.entry_station.zone).to eq(1)
+  expect(oystercard.entry_station.name).to eq("Bank")
+end
 # In order to be charged correctly
 # As a customer
 # I need a penalty charge deducted if I fail to touch in or out
