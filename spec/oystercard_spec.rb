@@ -1,7 +1,6 @@
 require 'oystercard'
 require 'journey'
 
-
 describe Oystercard do
   describe '#balance' do
     it 'checks that the oystercard has a balance' do
